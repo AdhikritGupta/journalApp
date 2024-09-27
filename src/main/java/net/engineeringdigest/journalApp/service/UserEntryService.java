@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class JournalEntryService {
+public class UserEntryService {
 
-    private static final Logger log = LoggerFactory.getLogger(JournalEntryService.class);
+    private static final Logger log = LoggerFactory.getLogger(UserEntryService.class);
     @Autowired
     private JournalEntryRepository journalEntryRepository;
 
