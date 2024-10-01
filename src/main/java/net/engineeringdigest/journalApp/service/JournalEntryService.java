@@ -1,6 +1,7 @@
 package net.engineeringdigest.journalApp.service;
 
 import net.engineeringdigest.journalApp.entity.JournalEntry;
+import net.engineeringdigest.journalApp.entity.User;
 import net.engineeringdigest.journalApp.repository.JournalEntryRepository;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
@@ -15,18 +16,23 @@ import java.util.Optional;
 @Component
 public class JournalEntryService {
 
-    private static final Logger log = LoggerFactory.getLogger(JournalEntryService.class);
     @Autowired
     private JournalEntryRepository journalEntryRepository;
 
+    @Autowired
+    private UserService userService;
+
+    public void saveEntry(JournalEntry journalEntry, String username){
+
+        User user = userService.findByUserName(username);
+        journalEntry.setDate(LocalDateTime.now());
+        JournalEntry saved = journalEntryRepository.save(journalEntry);
+        user.getJournalEntries().add(saved);
+        userService.saveEntry(user);
+    }
+
     public void saveEntry(JournalEntry journalEntry){
-        try {
-            journalEntry.setDate(LocalDateTime.now());
             journalEntryRepository.save(journalEntry);
-        } catch (Exception e){
-            log.error("Exception: "+e);
-        }
-        journalEntryRepository.save(journalEntry);
     }
 
     public List<JournalEntry> getAll() {
@@ -37,7 +43,10 @@ public class JournalEntryService {
         return journalEntryRepository.findById(id);
     }
 
-    public void deleteById(ObjectId id){
+    public void deleteById(ObjectId id, String username){
+        User user = userService.findByUserName(username);
+        user.getJournalEntries().removeIf(x -> x.getId().equals(id));
+        userService.saveEntry(user);
         journalEntryRepository.deleteById(id);
     }
 }
