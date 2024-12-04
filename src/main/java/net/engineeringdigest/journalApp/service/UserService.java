@@ -30,9 +30,12 @@ public class UserService {
         user.setRoles(Arrays.asList("USER"));
         userRepository.save(user);
     }
-    public void saveNewUser(User user){
+    public void saveNewUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Arrays.asList("USER")); // Assign default role if needed
         userRepository.save(user);
     }
+
 
     public List<User> getAll() {
         return userRepository.findAll();
