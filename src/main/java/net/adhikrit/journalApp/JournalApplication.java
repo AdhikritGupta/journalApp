@@ -1,4 +1,4 @@
-package net.engineeringdigest.journalApp;
+package net.adhikrit.journalApp;
 
 
 import org.springframework.boot.SpringApplication;

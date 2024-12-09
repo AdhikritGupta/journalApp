@@ -1,9 +1,9 @@
-package net.engineeringdigest.journalApp.controller;
+package net.adhikrit.journalApp.controller;
 
-import net.engineeringdigest.journalApp.entity.JournalEntry;
-import net.engineeringdigest.journalApp.entity.User;
-import net.engineeringdigest.journalApp.service.JournalEntryService;
-import net.engineeringdigest.journalApp.service.UserService;
+import net.adhikrit.journalApp.entity.JournalEntry;
+import net.adhikrit.journalApp.entity.User;
+import net.adhikrit.journalApp.service.JournalEntryService;
+import net.adhikrit.journalApp.service.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
