@@ -6,6 +6,7 @@ import net.adhikrit.journalApp.entity.User;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +27,7 @@ public class JournalEntryService {
         journalEntry.setDate(LocalDateTime.now());
         JournalEntry saved = journalEntryRepository.save(journalEntry);
         user.getJournalEntries().add(saved);
-        userService.saveEntry(user);
+        userService.saveUser(user);
     }
 
     public void saveEntry(JournalEntry journalEntry){
@@ -41,12 +42,27 @@ public class JournalEntryService {
         return journalEntryRepository.findById(id);
     }
 
-    public void deleteById(ObjectId id, String username){
-        User user = userService.findByUserName(username);
-        user.getJournalEntries().removeIf(x -> x.getId().equals(id));
-        userService.saveEntry(user);
-        journalEntryRepository.deleteById(id);
+    @Transactional
+    public boolean deleteById(ObjectId id, String username){
+
+        boolean removed=false;
+        try {
+            User user = userService.findByUserName(username);
+            removed = user.getJournalEntries().removeIf(x -> x.getId().equals(id));
+            if (removed) {
+                userService.saveUser(user);
+                journalEntryRepository.deleteById(id);
+            }
+        } catch (Exception e){
+            System.out.println(e);
+            throw new RuntimeException("Error deleting journal entry");
+        }
+        return removed;
     }
+
+//    public List<JournalEntry> findByUsername(String username){
+//        return journalEntryRepository.findByUsername(username);
+//    }
 }
 
 // controller --> service --> repository
